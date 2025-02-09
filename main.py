@@ -1,4 +1,6 @@
 import ollama
+import faiss
+import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 class TextGenerator:
@@ -16,6 +18,10 @@ class TextGenerator:
         self.model = model
         # 回答を取得
         self.answers_vector = [self.vectorize_text(answer) for answer in self.answers]
+        # ベクトルの定義 (任意の数のベクトル)
+        self.answers_vector = [self.vectorize_text(answer) for answer in self.answers]
+        # ベクトルをファイルにシリアライズする
+        np.save('vectors.npy', self.answers_vector)
 
     def generate(self, retrieved_data):
         prompt = f""
@@ -35,7 +41,8 @@ class TextGenerator:
         # コサイン類似度が最も高い回答を取得
         max_similarity = 0
         most_similar_index = 0
-        for index, vector in enumerate(self.answers_vector):
+        answers_vector = np.load('vectors.npy')
+        for index, vector in enumerate(answers_vector):
             similarity = cosine_similarity([question_vector], [vector])[0][0]
             print(f"コサイン類似度: {similarity.round(4)}:{self.answers[index]}")
             # 取り出したコサイン類似度が最大のものを保存
@@ -43,6 +50,7 @@ class TextGenerator:
                 max_similarity = similarity
                 most_similar_index = index
         print(f"\n質問: {question}\n回答: {self.answers[most_similar_index]}\n")
+        print(f"最も類似度が高い回答: {self.answers[most_similar_index]}¥n")
 
         prompt = f'''
 次の質問について、情報を基に簡潔に回答して下さい。
