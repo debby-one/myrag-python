@@ -1,5 +1,4 @@
 import ollama
-import faiss
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -10,7 +9,6 @@ class TextGenerator:
         "テレビ体操は、テレビでラジオ体操を放送しています",
         "サラリーマン体操は、テレビでサラリーマンが体操します",
     ]
-
     answers_vector = []
 
     def __init__(self, client, model):
